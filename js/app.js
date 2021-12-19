@@ -1,5 +1,6 @@
 //variables
 const btnEnviar=document.querySelector('#enviar');
+const btnReset=document.querySelector('#resetBtn');
 const email =document.querySelector('#email'); 
 const asunto =document.querySelector('#asunto'); 
 const mensaje =document.querySelector('#mensaje'); 
@@ -14,6 +15,7 @@ function aventListener() {
      asunto.addEventListener('blur',validarFormulario);
      mensaje.addEventListener('blur',validarFormulario);
      formulario.addEventListener('submit',enviarEmail);
+     btnReset.addEventListener('click',limpiarFormulario);
 }
 
 //funciones
@@ -24,12 +26,7 @@ function iniciarApp() {
 }
 function validarFormulario(e) {
     if (e.target.value.length > 0) {
-        const errores = document.querySelectorAll('.error');
-        if (errores.length !== 0) {
-            //Eliminar mensaje de error
-            const error= document.querySelector('p.error');
-            error.remove();
-        }
+        eliminarMensaje();
         e.target.classList.remove('border-red-500');
         e.target.classList.add('border','border-green-500');
         if (e.target.type === 'email') {
@@ -60,13 +57,16 @@ function mostrarError(mensaje) {
 
     mensajeError.textContent = mensaje;
     mensajeError.classList.add('border','border-red-500,background-red-100','text-red-500','p-3','mt-5','text-center', 'error');
+    eliminarMensaje();
+    formulario.appendChild(mensajeError);
+}
+function eliminarMensaje() {
     const errores = document.querySelectorAll('.error');
     if (errores.length !== 0) {
         //Eliminar mensaje de error
         const error= document.querySelector('p.error');
         error.remove();
     }
-    formulario.appendChild(mensajeError);
 }
 function enviarEmail(e) {
     e.preventDefault();
@@ -82,5 +82,19 @@ function enviarEmail(e) {
          parrafo.classList.add('text-center','my-10','p-2','bg-green-500','text-white','font-bold','uppercase');
          //Insertamos el mensaje arriba de los botones
          formulario.insertBefore(parrafo,spinner);
+
+         //Eliminar mensaje de exito
+         setTimeout(() => {
+             parrafo.remove();
+             limpiarFormulario();
+         }, 5000);
      }, 3000);
+}
+function limpiarFormulario() {
+    email.classList.remove('border', 'border-green-500');
+    asunto.classList.remove('border', 'border-green-500');
+    mensaje.classList.remove('border', 'border-green-500');
+    eliminarMensaje();
+    formulario.reset();
+    iniciarApp();
 }
